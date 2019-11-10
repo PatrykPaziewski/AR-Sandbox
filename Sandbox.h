@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <GL/GLObject.h>
 #include <GL/GLGeometryVertex.h>
 #include <GLMotif/ToggleButton.h>
+#include <GLMotif/CascadeButton.h>
 #include <GLMotif/TextFieldSlider.h>
 #include <Vrui/Tool.h>
 #include <Vrui/GenericToolFactory.h>
@@ -135,7 +136,9 @@ class Sandbox:public Vrui::Application,public GLObject
 	Kinect::FrameSource::IntrinsicParameters cameraIps; // Intrinsic parameters of the Kinect camera
 	FrameFilter* frameFilter; // Processing object to filter raw depth frames from the Kinect camera
 	bool pauseUpdates; // Pauses updates of the topography
-	Threads::TripleBuffer<Kinect::FrameBuffer> filteredFrames; // Triple buffer for incoming filtered depth frames
+    bool wybor; //Wybrano produkt
+    std::string jakiprodukt = "brak"; //Wskazuje jaki produkt został wybrany
+    Threads::TripleBuffer<Kinect::FrameBuffer> filteredFrames; // Triple buffer for incoming filtered depth frames
 	DepthImageRenderer* depthImageRenderer; // Object managing the current filtered depth image
 	ONTransform boxTransform; // Transformation from camera space to baseplane space (x along long sandbox axis, z up)
 	Scalar boxSize; // Radius of sphere around sandbox area
@@ -152,7 +155,15 @@ class Sandbox:public Vrui::Application,public GLObject
 	DEM* activeDem; // The currently active DEM
 	GLMotif::PopupMenu* mainMenu;
 	GLMotif::ToggleButton* pauseUpdatesToggle;
+    GLMotif::ToggleButton* hillshade;
+    GLMotif::ToggleButton* slope;
+    GLMotif::ToggleButton* aspect;
+    GLMotif::ToggleButton* color_relief;
+    GLMotif::ToggleButton* TRI;
+    GLMotif::ToggleButton* TPI;
+    GLMotif::ToggleButton* roughness;
 	GLMotif::PopupWindow* waterControlDialog;
+    GLMotif::CascadeButton* PochodneMenu;
 	GLMotif::TextFieldSlider* waterSpeedSlider;
 	GLMotif::TextFieldSlider* waterMaxStepsSlider;
 	GLMotif::TextField* frameRateTextField;
@@ -165,11 +176,20 @@ class Sandbox:public Vrui::Application,public GLObject
 	void toggleDEM(DEM* dem); // Sets or toggles the currently active DEM
 	void addWater(GLContextData& contextData) const; // Function to render geometry that adds water to the water table
 	void pauseUpdatesCallback(GLMotif::ToggleButton::ValueChangedCallbackData* cbData);
+    void hillshadeCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc);
+    void slopeCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc);
+    void aspectCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc);
+    void color_reliefCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc);
+    void TRICallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc);
+    void TPICallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc);
+    void roughnessCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc);
+    void wylklawisze();
 	void showWaterControlDialogCallback(Misc::CallbackData* cbData);
 	void waterSpeedSliderCallback(GLMotif::TextFieldSlider::ValueChangedCallbackData* cbData);
 	void waterMaxStepsSliderCallback(GLMotif::TextFieldSlider::ValueChangedCallbackData* cbData);
 	void waterAttenuationSliderCallback(GLMotif::TextFieldSlider::ValueChangedCallbackData* cbData);
 	GLMotif::PopupMenu* createMainMenu(void);
+    GLMotif::PopupMenu* CreatePochodnesubMenu();
 	GLMotif::PopupWindow* createWaterControlDialog(void);
 	
 	/* Constructors and destructors: */

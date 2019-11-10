@@ -364,26 +364,204 @@ void Sandbox::waterAttenuationSliderCallback(GLMotif::TextFieldSlider::ValueChan
     waterTable->setAttenuation(GLfloat(1.0 - cbData->value));
 }
 
-GLMotif::PopupMenu* Sandbox::createMainMenu(void)
+void Sandbox::wylklawisze()
+{
+    hillshade   -> setToggle(false);
+    slope       -> setToggle(false);
+    aspect      -> setToggle(false);
+    color_relief-> setToggle(false);
+    TRI         -> setToggle(false);
+    TPI         -> setToggle(false);
+    roughness   -> setToggle(false);
+    if (jakiprodukt== "hillshade")
+        hillshade   -> setToggle(true);
+    else if (jakiprodukt=="slope")
+        slope       -> setToggle(true);
+    else if (jakiprodukt== "aspect")
+        aspect      -> setToggle(true);
+    else if (jakiprodukt== "color-relief")
+        color_relief-> setToggle(true);
+    else if (jakiprodukt== "TRI")
+        TRI         -> setToggle(true);
+    else if (jakiprodukt== "TPI")
+        TPI         -> setToggle(true);
+    else if (jakiprodukt== "roughness")
+        roughness   -> setToggle(true);
+
+};
+void Sandbox::hillshadeCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc)
+{
+    wybor = wartosc->set;
+    if (wybor)
+    {
+        jakiprodukt = "hillshade";
+        Sandbox::wylklawisze();
+
+    }
+    else
+    {
+        jakiprodukt = "brak";
+    }
+
+}
+void Sandbox::slopeCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc)
+{
+    wybor = wartosc->set;
+    if (wybor)
+    {
+        jakiprodukt = "slope";
+        Sandbox::wylklawisze();
+        renderSettings.back().useContourLines = false;
+        renderSettings.back().useSlopes = true;
+    }
+    else
+    {
+        jakiprodukt = "brak";
+    }
+}
+void Sandbox::aspectCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc)
+{
+    wybor = wartosc->set;
+    if (wybor)
+    {
+        jakiprodukt = "aspect";
+        Sandbox::wylklawisze();
+    }
+    else
+    {
+        jakiprodukt = "brak";
+    }
+
+}
+void Sandbox::color_reliefCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc)
+{
+    wybor = wartosc->set;
+    if (wybor)
+    {
+        jakiprodukt = "color-relief";
+        Sandbox::wylklawisze();
+
+    }
+    else
+    {
+        jakiprodukt = "brak";
+    }
+
+}
+void Sandbox::TRICallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc)
+{
+    wybor = wartosc->set;
+    if (wybor)
+    {
+        jakiprodukt = "TRI";
+        Sandbox::wylklawisze();
+    }
+    else
+    {
+        jakiprodukt = "brak";
+    }
+
+}
+void Sandbox::TPICallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc)
+{
+    wybor = wartosc->set;
+    if (wybor)
+    {
+        jakiprodukt = "TPI";
+        Sandbox::wylklawisze();
+    }
+    else
+    {
+        jakiprodukt = "brak";
+    }
+
+}
+void Sandbox::roughnessCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc)
+{
+    wybor = wartosc->set;
+    if (wybor)
+    {
+        jakiprodukt = "roughness";
+        Sandbox::wylklawisze();
+    }
+    else
+    {
+        jakiprodukt = "brak";
+    }
+
+}
+
+GLMotif::PopupMenu* Sandbox::CreatePochodnesubMenu() //PP
+{
+    GLMotif::PopupMenu* PochodnesubPopup=new GLMotif::PopupMenu("PochodnesubMenu",Vrui::getWidgetManager());
+    PochodnesubPopup->setTitle("Wybierz produkt:");
+
+    GLMotif::Menu* PochodnesubMenu=new GLMotif::Menu("PochodnesubMenu",PochodnesubPopup,false);
+
+    /*Dodaj przycisk spadki */
+    hillshade=new GLMotif::ToggleButton("hillshade",PochodnesubMenu,"Mapa hillshade");
+    hillshade->getValueChangedCallbacks().add(this, &Sandbox::hillshadeCallback);
+    hillshade-> setToggle(false);
+
+
+    /*Dodaj przycisk spadki */
+    slope=new GLMotif::ToggleButton("slope",PochodnesubMenu,"Mapa slope");
+    slope-> setToggle(false);
+    slope->getValueChangedCallbacks().add(this, &Sandbox::slopeCallback);
+
+    /*Dodaj przycisk spadki */
+    aspect=new GLMotif::ToggleButton("aspect",PochodnesubMenu,"Mapa aspect");
+    aspect-> setToggle(false);
+    aspect->getValueChangedCallbacks().add(this, &Sandbox::aspectCallback);
+
+    /*Dodaj przycisk spadki */
+    color_relief=new GLMotif::ToggleButton("color_relief",PochodnesubMenu,"Mapa color-relief");
+    color_relief-> setToggle(false);
+    color_relief->getValueChangedCallbacks().add(this, &Sandbox::color_reliefCallback);
+
+    /*Dodaj przycisk spadki */
+    TRI=new GLMotif::ToggleButton("TRI",PochodnesubMenu,"Mapa TRI");
+    TRI-> setToggle(false);
+    TRI->getValueChangedCallbacks().add(this, &Sandbox::TRICallback);
+
+    /*Dodaj przycisk spadki */
+    TPI=new GLMotif::ToggleButton("TPI",PochodnesubMenu,"Mapa TPI");
+    TPI-> setToggle(false);
+    TPI->getValueChangedCallbacks().add(this, &Sandbox::TPICallback);
+
+    /*Dodaj przycisk spadki */
+    roughness=new GLMotif::ToggleButton("roughness",PochodnesubMenu,"Mapa roughness");
+    roughness-> setToggle(false);
+    roughness->getValueChangedCallbacks().add(this, &Sandbox::roughnessCallback);
+
+    PochodnesubMenu->manageChild();
+
+    return PochodnesubPopup;
+
+}
+GLMotif::PopupMenu* Sandbox::createMainMenu()
 {
     /* Create a popup shell to hold the main menu: */
-    GLMotif::PopupMenu* mainMenuPopup = new GLMotif::PopupMenu("MainMenuPopup", Vrui::getWidgetManager());
+    GLMotif::PopupMenu* mainMenuPopup=new GLMotif::PopupMenu("MainMenuPopup",Vrui::getWidgetManager());
     mainMenuPopup->setTitle("AR Sandbox");
 
     /* Create the main menu itself: */
-    GLMotif::Menu* mainMenu = new GLMotif::Menu("MainMenu", mainMenuPopup, false);
+    GLMotif::Menu* mainMenu=new GLMotif::Menu("MainMenu",mainMenuPopup,false);
 
     /* Create a button to pause topography updates: */
-    pauseUpdatesToggle = new GLMotif::ToggleButton("PauseUpdatesToggle", mainMenu, "Pause Topography");
+    pauseUpdatesToggle=new GLMotif::ToggleButton("PauseUpdatesToggle",mainMenu,"Pause Topography");
     pauseUpdatesToggle->setToggle(false);
-    pauseUpdatesToggle->getValueChangedCallbacks().add(this, &Sandbox::pauseUpdatesCallback);
+    pauseUpdatesToggle->getValueChangedCallbacks().add(this,&Sandbox::pauseUpdatesCallback);
 
-    if (waterTable != 0)
+    /* Rozwijalne menu do pochodnych NMT: (PP) */
+    PochodneMenu=new GLMotif::CascadeButton("PochodneNMT",mainMenu,"Pochodne NMT");
+    PochodneMenu->setPopup(CreatePochodnesubMenu());
+
+    if(waterTable!=0)
     {
         /* Create a button to show the water control dialog: */
-        GLMotif::Button* showWaterControlDialogButton =
-            new GLMotif::Button("ShowWaterControlDialogButton", mainMenu, "Show Water Simulation Control");
-        showWaterControlDialogButton->getSelectCallbacks().add(this, &Sandbox::showWaterControlDialogCallback);
+        GLMotif::Button* showWaterControlDialogButton=new GLMotif::Button("ShowWaterControlDialogButton",mainMenu,"Show Water Simulation Control");
+        showWaterControlDialogButton->getSelectCallbacks().add(this,&Sandbox::showWaterControlDialogCallback);
     }
 
     /* Finish building the main menu: */
@@ -1411,6 +1589,30 @@ void Sandbox::frame(void)
 
     if (pauseUpdates)
         Vrui::scheduleUpdate(Vrui::getApplicationTime() + 1.0 / 30.0);
+
+    if (wybor)
+    {
+        if(jakiprodukt == "slope")
+        {
+            for (std::vector<RenderSettings>::iterator rsIt = renderSettings.begin();
+                 rsIt != renderSettings.end(); ++rsIt)
+            {
+                rsIt -> surfaceRenderer -> setDrawSlopes(true);
+                rsIt -> surfaceRenderer -> setDrawContourLines(false);
+            }
+
+
+        }
+    }
+    else
+    {
+        for (std::vector<RenderSettings>::iterator rsIt = renderSettings.begin();
+             rsIt != renderSettings.end(); ++rsIt)
+        {
+            rsIt -> surfaceRenderer-> setDrawSlopes(false);
+            rsIt -> surfaceRenderer -> setDrawContourLines(true);
+        }
+    }
 }
 
 void Sandbox::display(GLContextData& contextData) const
