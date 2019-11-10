@@ -411,8 +411,6 @@ void Sandbox::slopeCallback(GLMotif::ToggleButton::ValueChangedCallbackData* war
     {
         jakiprodukt = "slope";
         Sandbox::wylklawisze();
-        renderSettings.back().useContourLines = false;
-        renderSettings.back().useSlopes = true;
     }
     else
     {
