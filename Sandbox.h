@@ -59,6 +59,7 @@ class Lightsource;
 }
 namespace Kinect {
 class Camera;
+class FrameSaver;
 }
 class FrameFilter;
 class DepthImageRenderer;
@@ -104,6 +105,7 @@ class Sandbox:public Vrui::Application,public GLObject
 		bool useShadows; // Flag whether to use shadows in augmented reality hill shading
 		ElevationColorMap* elevationColorMap; // Pointer to an elevation color map
 		bool useContourLines; // Flag whether to draw elevation contour lines
+        bool useSlopes; // Flag whether to draw elevation gradient as a colour
 		GLfloat contourLineSpacing; // Spacing between adjacent contour lines in cm
 		bool renderWaterSurface; // Flag whether to render the water surface as a geometric surface
 		GLfloat waterOpacity; // Opacity factor for water when rendered as texture
@@ -126,7 +128,8 @@ class Sandbox:public Vrui::Application,public GLObject
 	
 	/* Elements: */
 	private:
-	Kinect::FrameSource* camera; // The Kinect camera device
+        Kinect::FrameSource* camera = nullptr; // The Kinect camera device
+        Kinect::FrameSaver* saver = nullptr;
 	unsigned int frameSize[2]; // Width and height of the camera's depth frames
 	PixelDepthCorrection* pixelDepthCorrection; // Buffer of per-pixel depth correction coefficients
 	Kinect::FrameSource::IntrinsicParameters cameraIps; // Intrinsic parameters of the Kinect camera
