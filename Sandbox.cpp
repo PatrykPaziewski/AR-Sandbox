@@ -169,6 +169,8 @@ Sandbox::RenderSettings::RenderSettings(void)
     , elevationColorMap(0)
     , useContourLines(true)
     , useSlopes(false)
+    , useAspect(false)
+    , useHillshade(false)
     , contourLineSpacing(0.75f)
     , renderWaterSurface(false)
     , waterOpacity(2.0f)
@@ -387,6 +389,13 @@ void Sandbox::wylklawisze()
         TPI         -> setToggle(true);
     else if (jakiprodukt== "roughness")
         roughness   -> setToggle(true);
+    for (std::vector<RenderSettings>::iterator rsIt = renderSettings.begin();
+         rsIt != renderSettings.end(); ++rsIt)
+    {
+        rsIt -> surfaceRenderer -> setDrawSlopes(false);
+        rsIt -> surfaceRenderer -> setDrawAspect(false);
+        rsIt -> surfaceRenderer -> setDrawHillshade(false);
+    }
 
 };
 void Sandbox::hillshadeCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc)
@@ -1238,6 +1247,8 @@ Sandbox::Sandbox(int& argc, char**& argv)
         rsElem.surfaceRenderer = new SurfaceRenderer(depthImageRenderer);
         rsElem.surfaceRenderer->setDrawContourLines(rsElem.useContourLines);
         rsElem.surfaceRenderer->setDrawSlopes(rsElem.useSlopes);
+        rsElem.surfaceRenderer->setDrawAspect(rsElem.useAspect);
+        rsElem.surfaceRenderer->setDrawHillshade(rsElem.useHillshade);
         rsElem.surfaceRenderer->setContourLineDistance(rsElem.contourLineSpacing);
         rsElem.surfaceRenderer->setElevationColorMap(rsElem.elevationColorMap);
         rsElem.surfaceRenderer->setIlluminate(rsElem.hillshade);
@@ -1598,8 +1609,24 @@ void Sandbox::frame(void)
                 rsIt -> surfaceRenderer -> setDrawSlopes(true);
                 rsIt -> surfaceRenderer -> setDrawContourLines(false);
             }
-
-
+        }
+        else if (jakiprodukt == "aspect")
+        {
+            for (std::vector<RenderSettings>::iterator rsIt = renderSettings.begin();
+                 rsIt != renderSettings.end(); ++rsIt)
+            {
+                rsIt -> surfaceRenderer -> setDrawAspect(true);
+                rsIt -> surfaceRenderer -> setDrawContourLines(false);
+            }
+        }
+        else if (jakiprodukt == "hillshade")
+        {
+            for (std::vector<RenderSettings>::iterator rsIt = renderSettings.begin();
+                 rsIt != renderSettings.end(); ++rsIt)
+            {
+                rsIt->surfaceRenderer-> setDrawHillshade(true);
+                rsIt -> surfaceRenderer -> setDrawContourLines(false);
+            }
         }
     }
     else
@@ -1607,7 +1634,9 @@ void Sandbox::frame(void)
         for (std::vector<RenderSettings>::iterator rsIt = renderSettings.begin();
              rsIt != renderSettings.end(); ++rsIt)
         {
-            rsIt -> surfaceRenderer-> setDrawSlopes(false);
+            rsIt -> surfaceRenderer -> setDrawSlopes(false);
+            rsIt -> surfaceRenderer -> setDrawAspect(false);
+            rsIt -> surfaceRenderer -> setDrawHillshade(false);
             rsIt -> surfaceRenderer -> setDrawContourLines(true);
         }
     }

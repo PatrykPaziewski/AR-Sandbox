@@ -107,6 +107,8 @@ class Sandbox:public Vrui::Application,public GLObject
 		ElevationColorMap* elevationColorMap; // Pointer to an elevation color map
 		bool useContourLines; // Flag whether to draw elevation contour lines
         bool useSlopes; // Flag whether to draw elevation gradient as a colour
+        bool useAspect; // Flag whether to draw elevation as a aspect
+        bool useHillshade; //Flag whether to draw elevation as a hilshade
 		GLfloat contourLineSpacing; // Spacing between adjacent contour lines in cm
 		bool renderWaterSurface; // Flag whether to render the water surface as a geometric surface
 		GLfloat waterOpacity; // Opacity factor for water when rendered as texture
