@@ -1,5 +1,5 @@
 /***********************************************************************
-SurfaceSlopeShader
+SurfaceSlopeShader - Created by Patryk Paziewski
 ***********************************************************************/
 
 #extension GL_ARB_texture_rectangle : enable
@@ -21,7 +21,7 @@ void drawSlopes(in vec2 fragCoord,inout vec4 baseColor)
 	float val7=(texture2DRect(pixelCornerElevationSampler,vec2(fragCoord.x,fragCoord.y+1.0)).r);
 	float val8=(texture2DRect(pixelCornerElevationSampler,vec2(fragCoord.x+1.0,fragCoord.y+1.0)).r);
 
-	float diffx=val2-val0+2.0*(val5-val4)+val8-val6;
+	float diffx=val2-val0+2.0*(val5-val3)+val8-val6;
 	float diffy=val6-val0+2.0*(val7-val1)+val8-val2;
 	float slope=atan(sqrt(diffx*diffx+diffy*diffy)); 
 	baseColor=vec4(1.0-slope,1.0-slope,1.0,0.0);
