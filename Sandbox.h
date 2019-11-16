@@ -160,10 +160,6 @@ class Sandbox:public Vrui::Application,public GLObject
     GLMotif::ToggleButton* hillshade;
     GLMotif::ToggleButton* slope;
     GLMotif::ToggleButton* aspect;
-    GLMotif::ToggleButton* color_relief;
-    GLMotif::ToggleButton* TRI;
-    GLMotif::ToggleButton* TPI;
-    GLMotif::ToggleButton* roughness;
 	GLMotif::PopupWindow* waterControlDialog;
     GLMotif::CascadeButton* PochodneMenu;
 	GLMotif::TextFieldSlider* waterSpeedSlider;
@@ -181,10 +177,6 @@ class Sandbox:public Vrui::Application,public GLObject
     void hillshadeCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc);
     void slopeCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc);
     void aspectCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc);
-    void color_reliefCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc);
-    void TRICallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc);
-    void TPICallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc);
-    void roughnessCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc);
     void wylklawisze();
 	void showWaterControlDialogCallback(Misc::CallbackData* cbData);
 	void waterSpeedSliderCallback(GLMotif::TextFieldSlider::ValueChangedCallbackData* cbData);

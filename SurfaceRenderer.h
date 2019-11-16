@@ -98,7 +98,6 @@ class SurfaceRenderer:public GLObject
 
     bool drawSlopes;
     bool drawAspect;
-    bool drawHillshade;
 
     unsigned int surfaceSettingsVersion; // Version number of surface settings to invalidate surface rendering shader on changes
 	double animationTime; // Time value for water animation

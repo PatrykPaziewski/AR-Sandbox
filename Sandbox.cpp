@@ -371,30 +371,19 @@ void Sandbox::wylklawisze()
     hillshade   -> setToggle(false);
     slope       -> setToggle(false);
     aspect      -> setToggle(false);
-    color_relief-> setToggle(false);
-    TRI         -> setToggle(false);
-    TPI         -> setToggle(false);
-    roughness   -> setToggle(false);
     if (jakiprodukt== "hillshade")
         hillshade   -> setToggle(true);
     else if (jakiprodukt=="slope")
         slope       -> setToggle(true);
     else if (jakiprodukt== "aspect")
         aspect      -> setToggle(true);
-    else if (jakiprodukt== "color-relief")
-        color_relief-> setToggle(true);
-    else if (jakiprodukt== "TRI")
-        TRI         -> setToggle(true);
-    else if (jakiprodukt== "TPI")
-        TPI         -> setToggle(true);
-    else if (jakiprodukt== "roughness")
-        roughness   -> setToggle(true);
+
     for (std::vector<RenderSettings>::iterator rsIt = renderSettings.begin();
          rsIt != renderSettings.end(); ++rsIt)
     {
         rsIt -> surfaceRenderer -> setDrawSlopes(false);
         rsIt -> surfaceRenderer -> setDrawAspect(false);
-        rsIt -> surfaceRenderer -> setDrawHillshade(false);
+        rsIt -> surfaceRenderer -> setIlluminate(false);
     }
 
 };
@@ -440,63 +429,7 @@ void Sandbox::aspectCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wa
     }
 
 }
-void Sandbox::color_reliefCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc)
-{
-    wybor = wartosc->set;
-    if (wybor)
-    {
-        jakiprodukt = "color-relief";
-        Sandbox::wylklawisze();
 
-    }
-    else
-    {
-        jakiprodukt = "brak";
-    }
-
-}
-void Sandbox::TRICallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc)
-{
-    wybor = wartosc->set;
-    if (wybor)
-    {
-        jakiprodukt = "TRI";
-        Sandbox::wylklawisze();
-    }
-    else
-    {
-        jakiprodukt = "brak";
-    }
-
-}
-void Sandbox::TPICallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc)
-{
-    wybor = wartosc->set;
-    if (wybor)
-    {
-        jakiprodukt = "TPI";
-        Sandbox::wylklawisze();
-    }
-    else
-    {
-        jakiprodukt = "brak";
-    }
-
-}
-void Sandbox::roughnessCallback(GLMotif::ToggleButton::ValueChangedCallbackData* wartosc)
-{
-    wybor = wartosc->set;
-    if (wybor)
-    {
-        jakiprodukt = "roughness";
-        Sandbox::wylklawisze();
-    }
-    else
-    {
-        jakiprodukt = "brak";
-    }
-
-}
 
 GLMotif::PopupMenu* Sandbox::CreatePochodnesubMenu() //PP
 {
@@ -520,26 +453,6 @@ GLMotif::PopupMenu* Sandbox::CreatePochodnesubMenu() //PP
     aspect=new GLMotif::ToggleButton("aspect",PochodnesubMenu,"Mapa aspect");
     aspect-> setToggle(false);
     aspect->getValueChangedCallbacks().add(this, &Sandbox::aspectCallback);
-
-    /*Dodaj przycisk spadki */
-    color_relief=new GLMotif::ToggleButton("color_relief",PochodnesubMenu,"Mapa color-relief");
-    color_relief-> setToggle(false);
-    color_relief->getValueChangedCallbacks().add(this, &Sandbox::color_reliefCallback);
-
-    /*Dodaj przycisk spadki */
-    TRI=new GLMotif::ToggleButton("TRI",PochodnesubMenu,"Mapa TRI");
-    TRI-> setToggle(false);
-    TRI->getValueChangedCallbacks().add(this, &Sandbox::TRICallback);
-
-    /*Dodaj przycisk spadki */
-    TPI=new GLMotif::ToggleButton("TPI",PochodnesubMenu,"Mapa TPI");
-    TPI-> setToggle(false);
-    TPI->getValueChangedCallbacks().add(this, &Sandbox::TPICallback);
-
-    /*Dodaj przycisk spadki */
-    roughness=new GLMotif::ToggleButton("roughness",PochodnesubMenu,"Mapa roughness");
-    roughness-> setToggle(false);
-    roughness->getValueChangedCallbacks().add(this, &Sandbox::roughnessCallback);
 
     PochodnesubMenu->manageChild();
 
@@ -756,6 +669,8 @@ void printUsage(void)
     std::cout << "     Sets the name of a named POSIX pipe from which to read control commands" << std::endl;
     std::cout << "  -slp" << std::endl;
     std::cout << "     Enables slope color shader" << std::endl;
+    std::cout << "  -asp" << std::endl;
+    std::cout << "     Enables aspect color shader" << std::endl;
     std::cout << "  -f <input file prefix>" << std::endl;
     std::cout << "     Use color/depth file with given name instead of Kinect" << std::endl;
     std::cout << "  -o <output file prefix>" << std::endl;
@@ -1007,6 +922,11 @@ Sandbox::Sandbox(int& argc, char**& argv)
                 renderSettings.back().useContourLines = false;
                 renderSettings.back().useSlopes = true;
             }
+            else if (strcasecmp(argv[i] + 1, "asp") == 0)
+            {
+                renderSettings.back().useContourLines = false;
+                renderSettings.back().useAspect = true;
+            }
             else if (strcasecmp(argv[i] + 1, "rws") == 0)
                 renderSettings.back().renderWaterSurface = true;
             else if (strcasecmp(argv[i] + 1, "rwt") == 0)
@@ -1248,7 +1168,6 @@ Sandbox::Sandbox(int& argc, char**& argv)
         rsElem.surfaceRenderer->setDrawContourLines(rsElem.useContourLines);
         rsElem.surfaceRenderer->setDrawSlopes(rsElem.useSlopes);
         rsElem.surfaceRenderer->setDrawAspect(rsElem.useAspect);
-        rsElem.surfaceRenderer->setDrawHillshade(rsElem.useHillshade);
         rsElem.surfaceRenderer->setContourLineDistance(rsElem.contourLineSpacing);
         rsElem.surfaceRenderer->setElevationColorMap(rsElem.elevationColorMap);
         rsElem.surfaceRenderer->setIlluminate(rsElem.hillshade);
@@ -1606,8 +1525,11 @@ void Sandbox::frame(void)
             for (std::vector<RenderSettings>::iterator rsIt = renderSettings.begin();
                  rsIt != renderSettings.end(); ++rsIt)
             {
+                rsIt -> surfaceRenderer -> setDrawAspect(false);
+                rsIt -> surfaceRenderer -> setDrawContourLines(true);
                 rsIt -> surfaceRenderer -> setDrawSlopes(true);
                 rsIt -> surfaceRenderer -> setDrawContourLines(false);
+                rsIt -> surfaceRenderer -> setIlluminate(false);
             }
         }
         else if (jakiprodukt == "aspect")
@@ -1615,8 +1537,11 @@ void Sandbox::frame(void)
             for (std::vector<RenderSettings>::iterator rsIt = renderSettings.begin();
                  rsIt != renderSettings.end(); ++rsIt)
             {
+                rsIt -> surfaceRenderer -> setDrawSlopes(false);
+                rsIt -> surfaceRenderer -> setDrawContourLines(true);
                 rsIt -> surfaceRenderer -> setDrawAspect(true);
                 rsIt -> surfaceRenderer -> setDrawContourLines(false);
+                rsIt -> surfaceRenderer -> setIlluminate(false);
             }
         }
         else if (jakiprodukt == "hillshade")
@@ -1624,7 +1549,9 @@ void Sandbox::frame(void)
             for (std::vector<RenderSettings>::iterator rsIt = renderSettings.begin();
                  rsIt != renderSettings.end(); ++rsIt)
             {
-                rsIt->surfaceRenderer-> setDrawHillshade(true);
+                rsIt -> surfaceRenderer -> setDrawSlopes(false);
+                rsIt -> surfaceRenderer -> setDrawAspect(false);
+                rsIt -> surfaceRenderer -> setIlluminate(true);
                 rsIt -> surfaceRenderer -> setDrawContourLines(false);
             }
         }
@@ -1636,8 +1563,8 @@ void Sandbox::frame(void)
         {
             rsIt -> surfaceRenderer -> setDrawSlopes(false);
             rsIt -> surfaceRenderer -> setDrawAspect(false);
-            rsIt -> surfaceRenderer -> setDrawHillshade(false);
             rsIt -> surfaceRenderer -> setDrawContourLines(true);
+            rsIt -> surfaceRenderer -> setIlluminate(false);
         }
     }
 }
@@ -1703,11 +1630,7 @@ void Sandbox::display(GLContextData& contextData) const
         projection *= Geometry::invert(ds.modelviewNavigational);
     }
 
-    if (rs.hillshade)
-    {
-        /* Set the surface material: */
-        glMaterial(GLMaterialEnums::FRONT, rs.surfaceMaterial);
-    }
+    glMaterial(GLMaterialEnums::FRONT, rs.surfaceMaterial);
 
 #if 0
 	if(rs.hillshade&&rs.useShadows)

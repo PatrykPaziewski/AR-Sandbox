@@ -412,22 +412,6 @@ GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker&
                 \n";
         }
 
-        if (drawHillshade)
-        {
-            /* Declare the hillshade coloring function: */
-            fragmentDeclarations += "\
-                void drawHillshade(in vec2,inout vec4);\n";
-
-            /* Compile the hillshade colouring shader: */
-            shaders.push_back(compileFragmentShader("SurfaceHillshadeShader"));
-
-            /* Call hillshade coloring function from fragment shader's main function: */
-            fragmentMain += "\
-                /* Modulate the base color using gradient descend/ascend angle: */\n\
-                drawHillshade(gl_FragCoord.xy,baseColor);\n\
-                \n";
-        }
-
         if (drawContourLines)
         {
             /* Declare the contour line function: */
@@ -538,7 +522,7 @@ GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker&
             *(ulPtr++) = glGetUniformLocationARB(result, "heightColorMapPlaneEq");
             *(ulPtr++) = glGetUniformLocationARB(result, "heightColorMapSampler");
         }
-        if (drawContourLines || drawSlopes || drawAspect || drawHillshade)
+        if (drawContourLines || drawSlopes || drawAspect)
         {
             *(ulPtr++) = glGetUniformLocationARB(result, "pixelCornerElevationSampler");
             *(ulPtr++) = glGetUniformLocationARB(result, "contourLineFactor");
@@ -675,7 +659,6 @@ SurfaceRenderer::SurfaceRenderer(const DepthImageRenderer* sDepthImageRenderer)
     , drawContourLines(true)
     , drawSlopes(false)
     , drawAspect(false)
-    , drawHillshade(false)
     , contourLineFactor(1.0f)
     , elevationColorMap(0)
     , drawDippingBed(false)
@@ -814,12 +797,6 @@ void SurfaceRenderer::setDrawAspect(bool newDrawAspect)
     ++surfaceSettingsVersion;
 }
 
-void SurfaceRenderer::setDrawHillshade(bool newDrawHillshade)
-{
-    drawHillshade = newDrawHillshade;
-    ++surfaceSettingsVersion;
-}
-
 void SurfaceRenderer::setContourLineDistance(GLfloat newContourLineDistance)
 {
     /* Set the new contour line factor: */
@@ -934,7 +911,7 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4], const PTransform& 
     projectionModelview *= modelview;
 
     /* Check if contour line rendering is enabled: */
-    if (drawContourLines || drawSlopes || drawAspect || drawHillshade)
+    if (drawContourLines || drawSlopes || drawAspect)
     {
         /* Run the first rendering pass to create a half-pixel offset texture of surface elevations: */
         renderPixelCornerElevations(viewport, projectionModelview, contextData, dataItem);
@@ -1009,7 +986,7 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4], const PTransform& 
         glUniform1iARB(*(ulPtr++), 1);
     }
 
-    if (drawContourLines || drawSlopes || drawAspect || drawHillshade )
+    if (drawContourLines || drawSlopes || drawAspect)
     {
         /* Bind the pixel corner elevation texture: */
         glActiveTextureARB(GL_TEXTURE2_ARB);
@@ -1114,7 +1091,7 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4], const PTransform& 
         glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP);
         glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
     }
-    if (drawContourLines || drawSlopes  || drawAspect  || drawHillshade)
+    if (drawContourLines || drawSlopes  || drawAspect)
     {
         glActiveTextureARB(GL_TEXTURE2_ARB);
         glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
