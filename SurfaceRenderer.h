@@ -95,8 +95,11 @@ class SurfaceRenderer:public GLObject
 	WaterTable2* waterTable; // Pointer to the water table object; if NULL, water is ignored
 	bool advectWaterTexture; // Flag whether water texture coordinates are advected to visualize water flow
 	GLfloat waterOpacity; // Scaling factor for water opacity
-	
-	unsigned int surfaceSettingsVersion; // Version number of surface settings to invalidate surface rendering shader on changes
+
+    bool drawSlopes;
+    bool drawAspect;
+
+    unsigned int surfaceSettingsVersion; // Version number of surface settings to invalidate surface rendering shader on changes
 	double animationTime; // Time value for water animation
 	
 	/* Private methods: */
@@ -112,7 +115,10 @@ class SurfaceRenderer:public GLObject
 	virtual void initContext(GLContextData& contextData) const;
 	
 	/* New methods: */
-	void setDrawContourLines(bool newDrawContourLines); // Enables or disables topographic contour lines
+    void setDrawContourLines(bool newDrawContourLines); // Enables or disables topographic contour lines
+    void setDrawSlopes(bool newDrawSlopes); // Enables or disables gradient colouring
+    void setDrawAspect(bool newDrawAspect); //Enables or disables aspect map
+    void setDrawHillshade(bool newDrawHilshade); //Enables or disables hilshade map
 	void setContourLineDistance(GLfloat newContourLineDistance); // Sets the elevation distance between adjacent topographic contour lines
 	void setElevationColorMap(ElevationColorMap* newElevationColorMap); // Sets an elevation color map
 	void setDrawDippingBed(bool newDrawDippingBed); // Sets the dipping bed flag

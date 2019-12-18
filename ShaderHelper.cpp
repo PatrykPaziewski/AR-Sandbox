@@ -21,50 +21,50 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #include "ShaderHelper.h"
 
-#include <string>
-#include <GL/gl.h>
 #include <GL/Extensions/GLARBFragmentShader.h>
 #include <GL/Extensions/GLARBShaderObjects.h>
 #include <GL/Extensions/GLARBVertexShader.h>
+#include <GL/gl.h>
+#include <string>
 
 #include "Config.h"
 
 GLhandleARB compileVertexShader(const char* vertexShaderFileName)
-	{
-	/* Construct the full shader source file name: */
-	std::string fullShaderFileName=CONFIG_SHADERDIR;
-	fullShaderFileName.push_back('/');
-	fullShaderFileName.append(vertexShaderFileName);
-	fullShaderFileName.append(".vs");
-	
-	/* Compile and return the vertex shader: */
-	return glCompileVertexShaderFromFile(fullShaderFileName.c_str());
-	}
+{
+    /* Construct the full shader source file name: */
+    std::string fullShaderFileName = CONFIG_SHADERDIR;
+    fullShaderFileName.push_back('/');
+    fullShaderFileName.append(vertexShaderFileName);
+    fullShaderFileName.append(".vs");
+
+    /* Compile and return the vertex shader: */
+    return glCompileVertexShaderFromFile(fullShaderFileName.c_str());
+}
 
 GLhandleARB compileFragmentShader(const char* fragmentShaderFileName)
-	{
-	/* Construct the full shader source file name: */
-	std::string fullShaderFileName=CONFIG_SHADERDIR;
-	fullShaderFileName.push_back('/');
-	fullShaderFileName.append(fragmentShaderFileName);
-	fullShaderFileName.append(".fs");
-	
-	/* Compile and return the fragment shader: */
-	return glCompileFragmentShaderFromFile(fullShaderFileName.c_str());
-	}
+{
+    /* Construct the full shader source file name: */
+    std::string fullShaderFileName = CONFIG_SHADERDIR;
+    fullShaderFileName.push_back('/');
+    fullShaderFileName.append(fragmentShaderFileName);
+    fullShaderFileName.append(".fs");
+
+    /* Compile and return the fragment shader: */
+    return glCompileFragmentShaderFromFile(fullShaderFileName.c_str());
+}
 
 GLhandleARB linkVertexAndFragmentShader(const char* shaderFileName)
-	{
-	/* Compile the vertex and fragment shaders: */
-	GLhandleARB vertexShader=compileVertexShader(shaderFileName);
-	GLhandleARB fragmentShader=compileFragmentShader(shaderFileName);
-	
-	/* Link the shader program: */
-	GLhandleARB shaderProgram=glLinkShader(vertexShader,fragmentShader);
-	
-	/* Release the compiled shaders (won't get deleted until shader program is released): */
-	glDeleteObjectARB(vertexShader);
-	glDeleteObjectARB(fragmentShader);
-	
-	return shaderProgram;
-	}
+{
+    /* Compile the vertex and fragment shaders: */
+    GLhandleARB vertexShader = compileVertexShader(shaderFileName);
+    GLhandleARB fragmentShader = compileFragmentShader(shaderFileName);
+
+    /* Link the shader program: */
+    GLhandleARB shaderProgram = glLinkShader(vertexShader, fragmentShader);
+
+    /* Release the compiled shaders (won't get deleted until shader program is released): */
+    glDeleteObjectARB(vertexShader);
+    glDeleteObjectARB(fragmentShader);
+
+    return shaderProgram;
+}
